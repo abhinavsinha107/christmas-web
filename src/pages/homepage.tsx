@@ -27,6 +27,7 @@ import { resetUser, setUser } from "../redux/reducers/userReducer";
 import { toast } from "react-toastify";
 import { useUpdateUserMutation } from "../services/api";
 import { notifyError } from "../toast";
+import { motion } from "framer-motion";
 
 import ff1 from "../assets/PositionsSexmas/f+f Positions/Christmas f+f Position 1.jpg";
 import ff2 from "../assets/PositionsSexmas/f+f Positions/Christmas f+f Position 2.jpg";
@@ -341,6 +342,8 @@ const Home = () => {
           gap: 5,
           overflowY: "auto",
           paddingBottom: "150px",
+          scrollbarWidth: "none",
+          msOverflowStyle: "none",
         }}
       >
         <HeroSection
@@ -377,34 +380,25 @@ const Home = () => {
                 transform: isSelected ? "translate(-50%, -50%)" : "none",
                 zIndex: isSelected ? 1000 : isHidden ? 0 : 1,
                 display: isHidden ? "none" : "block",
-                transition: isHidden
-                  ? "opacity 0.5s ease-in-out"
-                  : "all 0.5s ease-in-out",
                 pointerEvents: isHidden ? "none" : "auto",
               }}
             >
-              {selectedDay ? (
-                user?.scratchCards[i] ? (
-                  <Box
-                    component="img"
-                    src={
-                      gender === "Lesbian"
-                        ? scratchImagesff[i]
-                        : gender === "Straight"
-                        ? scratchImagesmf[i]
-                        : scratchImagesmm[i]
-                    }
-                    alt="Footer"
-                    sx={{ width: "100%", borderRadius: "50%" }}
-                  />
-                ) : (
-                  <ScratchCard
-                    width={250}
-                    height={250}
-                    image={dateCircle}
-                    finishPercent={60}
-                    onComplete={handleScratch}
-                  >
+              <motion.div
+             style={{
+              position: "relative",
+            }}
+            animate={{
+              scale: isSelected ? 0.8 : 1,
+              opacity: isHidden ? 0 : 1,  
+            }}
+              transition={{
+                type: "spring",
+                stiffness: 150, 
+                damping: 25,    
+              }}
+              >
+                {selectedDay ? (
+                  user?.scratchCards[i] ? (
                     <Box
                       component="img"
                       src={
@@ -417,43 +411,66 @@ const Home = () => {
                       alt="Footer"
                       sx={{ width: "100%", borderRadius: "50%" }}
                     />
-                  </ScratchCard>
-                )
-              ) : (
-                <Box
-                  sx={{
-                    ...styles.backgroundImage,
-                    width: selectedDay ? "250px" : "174px",
-                    height: selectedDay ? "250px" : "174px",
-                    backgroundImage:
-                      user?.scratchCards[i] && gender === "Lesbian"
-                        ? `url(${scratchImagesff[i]})`
-                        : user?.scratchCards[i] && gender === "Straight"
-                        ? `url(${scratchImagesmf[i]})`
-                        : user?.scratchCards[i] && gender === "Gay"
-                        ? `url(${scratchImagesmm[i]})`
-                        : `url(${dateCircle})`,
-                  }}
-                >
-                  {!selectedDay && (
-                    <Box
-                      sx={{
-                        ...styles.lockIcon,
-                        background:
-                          !user || !user.active || !user.payment
-                            ? `url(${lockIcon})`
-                            : !isEnabled
-                            ? `url(${lockIcon})`
-                            : "",
-                      }}
+                  ) : (
+                    <ScratchCard
+                      width={window.innerWidth > 768 ? 200 : 250}
+                      height={window.innerWidth > 768 ? 200 : 250}
+                      image={dateCircle}
+                      finishPercent={60}
+                      onComplete={handleScratch}
                     >
-                      {!user?.scratchCards[i] && (
-                        <Typography sx={styles.circleText}>{i + 1}</Typography>
-                      )}
-                    </Box>
-                  )}
-                </Box>
-              )}
+                      <Box
+                        component="img"
+                        src={
+                          gender === "Lesbian"
+                            ? scratchImagesff[i]
+                            : gender === "Straight"
+                            ? scratchImagesmf[i]
+                            : scratchImagesmm[i]
+                        }
+                        alt="Footer"
+                        sx={{ width: "100%", borderRadius: "50%" }}
+                      />
+                    </ScratchCard>
+                  )
+                ) : (
+                  <Box
+                    sx={{
+                      ...styles.backgroundImage,
+                      width: selectedDay ? "250px" : "174px",
+                      height: selectedDay ? "250px" : "174px",
+                      backgroundImage:
+                        user?.scratchCards[i] && gender === "Lesbian"
+                          ? `url(${scratchImagesff[i]})`
+                          : user?.scratchCards[i] && gender === "Straight"
+                          ? `url(${scratchImagesmf[i]})`
+                          : user?.scratchCards[i] && gender === "Gay"
+                          ? `url(${scratchImagesmm[i]})`
+                          : `url(${dateCircle})`,
+                    }}
+                  >
+                    {!selectedDay && (
+                      <Box
+                        sx={{
+                          ...styles.lockIcon,
+                          background:
+                            !user || !user.active || !user.payment
+                              ? `url(${lockIcon})`
+                              : !isEnabled
+                              ? `url(${lockIcon})`
+                              : "",
+                        }}
+                      >
+                        {!user?.scratchCards[i] && (
+                          <Typography sx={styles.circleText}>
+                            {i + 1}
+                          </Typography>
+                        )}
+                      </Box>
+                    )}
+                  </Box>
+                )}
+              </motion.div>
             </Button>
           );
         })}
@@ -530,10 +547,10 @@ const Home = () => {
               }}
               onClick={() => {
                 user && !user?.active
-                  ? navigate("/welcome")
-                  : user
-                  ? navigate("/sales")
-                  : navigate("/login");
+                ? navigate("/welcome")
+                : user
+                ? navigate("/sales")
+                : navigate("/login");
               }}
             >
               <Box component={"img"} src={upgradePng} width={"16px"} />
