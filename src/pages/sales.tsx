@@ -172,6 +172,8 @@ const Sales = () => {
       <div
         style={{
           overflowY: "scroll",
+          scrollbarWidth: "none", 
+          msOverflowStyle: "none",
           display: "flex",
           flexDirection: "column",
           alignItems: "center",
