@@ -13,7 +13,7 @@ import HeroSection from "../components/heroSection";
 import Footer from "../components/footer";
 import dateCircle from "../assets/dateCircle.png";
 import lockIcon from "../assets/lockIcon.png";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import ScratchCard from "react-scratchcard-v2";
 import straightPng from "../assets/straight.png";
 import gayPng from "../assets/gay.png";
@@ -180,6 +180,11 @@ const Home = () => {
   const [selectedDay, setSelectedDay] = useState<number | null>(null);
   const [openModal, setOpenModal] = useState(false);
 
+  const [lastClickedButton, setLastClickedButton] = useState<number | null>(null);
+  
+  // Explicitly type the ref to be an array of HTMLButtonElements
+  const buttonRefs = useRef<(HTMLButtonElement | null)[]>([]);
+
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
 
@@ -220,13 +225,20 @@ const Home = () => {
     if (today > targetDate) {
       setScratchingAllowed(true);
     }
-  }, [today, targetDate, setScratchingAllowed]);
+
+    if (lastClickedButton !== null && buttonRefs.current[lastClickedButton]) {
+      buttonRefs.current[lastClickedButton].scrollIntoView({
+        behavior: 'smooth',
+        block: 'center', 
+      });
+    }
+  }, [today, targetDate, setScratchingAllowed, lastClickedButton]);
 
   const daysRemaining = Math.ceil(
     (targetDate.getTime() - today.getTime()) / (1000 * 60 * 60 * 24)
   );
 
-  const handlePress = (day: number) => {
+  const handlePress = (day: number, index: number) => {
     if (!user) {
       navigate("/login");
     } else if (!user.active) {
@@ -234,11 +246,14 @@ const Home = () => {
     } else if (!user.payment) {
       navigate("/sales");
     } else if (scratchingAllowed && selectedDay === null) {
+      setLastClickedButton(index);
       setSelectedDay(day);
     } else {
       setSelectedDay(null);
     }
   };
+
+
 
   const handlePreferenceSelect = (preference: string) => {
     dispatch(setGender({ gender: preference }));
@@ -369,7 +384,7 @@ const Home = () => {
           return (
             <Button
               key={i}
-              onClick={() => isEnabled && handlePress(i + 1)}
+              onClick={() => isEnabled && handlePress(i + 1, i)}
               disabled={!user ? false : !isEnabled}
               style={{
                 all: "unset",
@@ -382,13 +397,14 @@ const Home = () => {
                 display: isHidden ? "none" : "block",
                 pointerEvents: isHidden ? "none" : "auto",
               }}
+              ref={(el) => (buttonRefs.current[i] = el)}
             >
               <motion.div
              style={{
               position: "relative",
             }}
             animate={{
-              scale: isSelected ? 0.8 : 1,
+              scale: isSelected ? 1 : 0.8,
               opacity: isHidden ? 0 : 1,  
             }}
               transition={{
@@ -429,7 +445,12 @@ const Home = () => {
                             : scratchImagesmm[i]
                         }
                         alt="Footer"
-                        sx={{ width: "100%", borderRadius: "50%" }}
+                        sx={{
+                          width: "100%", 
+                          maxWidth: "250px",  
+                          height: "auto", 
+                          borderRadius: "50%", 
+                        }}
                       />
                     </ScratchCard>
                   )
