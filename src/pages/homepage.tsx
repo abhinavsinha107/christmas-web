@@ -429,10 +429,8 @@ const Home = () => {
                     />
                   ) : (
                     <ScratchCard
-                      // width={window.innerWidth > 768 ? 200 : 250}
-                      // height={window.innerWidth > 768 ? 200 : 250}
-                      width={Math.min(window.innerWidth * 0.6, 250)}  
-                      height={Math.min(window.innerHeight * 0.6, 250)} 
+                      width={window.innerWidth > 768 ? 200 : 250}
+                      height={window.innerWidth > 768 ? 200 : 250}
                       image={dateCircle}
                       finishPercent={60}
                       onComplete={handleScratch}
