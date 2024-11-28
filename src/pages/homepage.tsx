@@ -225,7 +225,14 @@ const Home = () => {
     if (today > targetDate) {
       setScratchingAllowed(true);
     }
-  }, [today, targetDate, setScratchingAllowed]);
+
+    if (lastClickedButton !== null && buttonRefs.current[lastClickedButton]) {
+      buttonRefs.current[lastClickedButton].scrollIntoView({
+        behavior: 'smooth',
+        block: 'center', 
+      });
+    }
+  }, [today, targetDate, setScratchingAllowed, lastClickedButton]);
 
   const daysRemaining = Math.ceil(
     (targetDate.getTime() - today.getTime()) / (1000 * 60 * 60 * 24)
@@ -246,14 +253,7 @@ const Home = () => {
     }
   };
 
-  useEffect(() => {
-    if (lastClickedButton !== null && buttonRefs.current[lastClickedButton]) {
-      buttonRefs.current[lastClickedButton].scrollIntoView({
-        behavior: 'smooth',
-        block: 'center', 
-      });
-    }
-  }, [lastClickedButton]);
+
 
   const handlePreferenceSelect = (preference: string) => {
     dispatch(setGender({ gender: preference }));
