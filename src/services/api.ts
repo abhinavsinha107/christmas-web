@@ -16,8 +16,8 @@ export const api = createApi({
   tagTypes: ["User"],
   endpoints: (builder) => ({
     getUserById: builder.query<GetUserByIdResponse, string>({
-      query: () => ({
-        url: `users`,
+      query: (userId) => ({
+        url: `users/${userId}`,
         method: "GET",
       }),
       providesTags: ["User"],
@@ -47,6 +47,15 @@ export const api = createApi({
       invalidatesTags: ["User"],
       transformErrorResponse: (response) => response.data,
     }),
+    createPaymentSession: builder.mutation<any, { amount: number }>({
+      query: ({ amount }) => ({
+        url: `payments`,
+        method: "POST",
+        body: { amount },
+      }),
+      invalidatesTags: ["User"],
+      transformErrorResponse: (response) => response.data,
+    }),
   }),
 });
 
@@ -55,4 +64,5 @@ export const {
   useRegisterMutation,
   useLoginMutation,
   useUpdateUserMutation,
+  useCreatePaymentSessionMutation
 } = api;

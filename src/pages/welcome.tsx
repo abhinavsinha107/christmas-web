@@ -21,7 +21,7 @@ const useStyle = () =>
       height: "100vh",
       position: "relative",
       overflow: "hidden",
-      maxWidth: "420px",
+      maxWidth: "430px",
     },
     lights: {
       width: "100%",
@@ -184,7 +184,7 @@ const Welcome = () => {
       <Box
         sx={{
           position: "absolute",
-          bottom: 0,
+          bottom: "-4px",
           width: "100%",
           zIndex: 10,
         }}

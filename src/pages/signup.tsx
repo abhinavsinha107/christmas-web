@@ -30,7 +30,7 @@ const useStyle = (theme: Theme) =>
       height: "100vh",
       position: "relative",
       overflow: "hidden",
-      maxWidth: "420px",
+      maxWidth: "430px",
     },
     lights: {
       position: "absolute",

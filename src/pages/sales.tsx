@@ -4,17 +4,19 @@ import { createStyles } from "@mui/styles";
 import { FaCheckCircle } from "react-icons/fa";
 import lightsSvg from "../assets/lights.svg";
 import crossSvg from "../assets/cross.svg";
-import salesImage1 from "../assets/salesimage1.png";
-import salesImage2 from "../assets/salesimage2.png";
+import salesImage1 from "../assets/salesgif1.gif";
+import salesImage2 from "../assets/salesgif2.gif";
 import leftLeaf from "../assets/leftLeaf.png";
 import rightLeaf from "../assets/rightLeaf.png";
 import testimonialsSvg from "../assets/testimonials.svg";
 import starRatingsSvg from "../assets/starRatings.svg";
-import { useUpdateUserMutation } from "../services/api";
-import { RootState, useAppDispatch, useAppSelector } from "../redux/store";
-import { setUser } from "../redux/reducers/userReducer";
+import {
+  useCreatePaymentSessionMutation,
+} from "../services/api";
+import { RootState, useAppSelector } from "../redux/store";
 import { toast } from "react-toastify";
 import { useEffect } from "react";
+import { loadStripe } from "@stripe/stripe-js";
 
 const benefitsArray = [
   "Daily Sex Position Challenges",
@@ -32,7 +34,7 @@ const useStyle = () =>
       height: "100vh",
       position: "relative",
       overflow: "hidden",
-      maxWidth: "420px",
+      maxWidth: "430px",
     },
     lights: {
       width: "100%",
@@ -128,31 +130,38 @@ const useStyle = () =>
 const Sales = () => {
   const styles = useStyle();
   const navigate = useNavigate();
-  const dispatch = useAppDispatch();
 
-  const [makePayment] = useUpdateUserMutation();
-  const { user } = useAppSelector((state: RootState) => state.user);
+  const stripePromise = loadStripe(import.meta.env.VITE_Payment_Gateway_PK);
 
-  const handlePayment = async () => {
+  const [deposit, { data, isSuccess }] = useCreatePaymentSessionMutation();
+
+  const handleDeposit = async () => {
     try {
-      const res = await makePayment({
-        userId: user?._id ?? "",
-        payment: true,
-        active: user?.active,
-        scratchCards: user?.scratchCards,
-      }).unwrap();
-      dispatch(setUser({ user: res.data }));
-      toast.success("Payment Successfull!");
-      navigate("/");
+      await deposit({ amount: 6.99 });
     } catch (err) {
-      const error = err as ErrorResponse;
-      const message =
-        error?.message === "Validation error!"
-          ? error.data?.errors[0].msg ?? "Something went wrong"
-          : error?.message ?? "Something went wrong";
-      toast.error(message);
+      toast.error("Failed to make a payment");
+      console.error("Failed to create deposit session:", err);
     }
   };
+
+  useEffect(() => {
+    const redirectToStripeCheckout = async () => {
+      if (isSuccess) {
+        const stripe = await stripePromise;
+        const sessionId = data?.data?.id || "";
+
+        if (stripe && sessionId) {
+          const { error } = await stripe.redirectToCheckout({ sessionId });
+          if (error) {
+            console.log(error.message);
+          }
+        }
+      }
+    };
+    redirectToStripeCheckout();
+  }, [isSuccess, data, stripePromise]);
+
+  const { user } = useAppSelector((state: RootState) => state.user);
 
   useEffect(() => {
     if (!user?.active) {
@@ -165,14 +174,14 @@ const Sales = () => {
   return (
     <Box sx={styles.container}>
       <Box component="img" src={lightsSvg} alt="Lights" sx={styles.lights} />
-      <Button sx={styles.cross} onClick={() => navigate(-1)}>
+      <Button sx={styles.cross} onClick={() => navigate("/")}>
         <Box component="img" src={crossSvg} alt="Close" />
       </Button>
 
       <div
         style={{
           overflowY: "scroll",
-          scrollbarWidth: "none", 
+          scrollbarWidth: "none",
           msOverflowStyle: "none",
           display: "flex",
           flexDirection: "column",
@@ -281,14 +290,14 @@ const Sales = () => {
           }}
         >
           <Box width={"100%"}>
-            <Button onClick={handlePayment} sx={styles.button}>
+            <Button onClick={handleDeposit} sx={styles.button}>
               <Typography sx={styles.buttonUpperText}>
                 <span
                   style={{ textDecoration: "line-through", color: "#D6D6D6" }}
                 >
-                  24.99€
+                  29.99$
                 </span>{" "}
-                12.99€ One time
+                6.99$ One time
               </Typography>
               <Typography sx={styles.buttonLowerText}>
                 No monthly costs !

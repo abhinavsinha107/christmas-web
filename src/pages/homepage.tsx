@@ -18,16 +18,16 @@ import ScratchCard from "react-scratchcard-v2";
 import straightPng from "../assets/straight.png";
 import gayPng from "../assets/gay.png";
 import lesbianPng from "../assets/lesbian.png";
-import upgradePng from "../assets/upgrade.png";
 import loginPng from "../assets/login.png";
 import { useNavigate } from "react-router-dom";
 import { RootState, useAppDispatch, useAppSelector } from "../redux/store";
 import { setGender } from "../redux/reducers/genderReducer";
 import { resetUser, setUser } from "../redux/reducers/userReducer";
 import { toast } from "react-toastify";
-import { useUpdateUserMutation } from "../services/api";
+import { useGetUserByIdQuery, useUpdateUserMutation } from "../services/api";
 import { notifyError } from "../toast";
 import { motion } from "framer-motion";
+import salesImage1 from "../assets/salesgif1.gif";
 
 import ff1 from "../assets/PositionsSexmas/f+f Positions/Christmas f+f Position 1.jpg";
 import ff2 from "../assets/PositionsSexmas/f+f Positions/Christmas f+f Position 2.jpg";
@@ -117,7 +117,7 @@ const useStyle = () =>
       height: "100vh",
       position: "relative",
       overflow: "hidden",
-      maxWidth: "420px",
+      maxWidth: "430px",
     },
     lights: {
       width: "100%",
@@ -180,8 +180,10 @@ const Home = () => {
   const [selectedDay, setSelectedDay] = useState<number | null>(null);
   const [openModal, setOpenModal] = useState(false);
 
-  const [lastClickedButton, setLastClickedButton] = useState<number | null>(null);
-  
+  const [lastClickedButton, setLastClickedButton] = useState<number | null>(
+    null
+  );
+
   // Explicitly type the ref to be an array of HTMLButtonElements
   const buttonRefs = useRef<(HTMLButtonElement | null)[]>([]);
 
@@ -193,7 +195,7 @@ const Home = () => {
 
   const [scratchingAllowed, setScratchingAllowed] = useState(false);
   const today = new Date();
-  const targetDate = new Date(today.getFullYear(), 10, 21);
+  const targetDate = new Date(today.getFullYear(), 11, 1);
 
   const [scratched] = useUpdateUserMutation();
 
@@ -228,8 +230,8 @@ const Home = () => {
 
     if (lastClickedButton !== null && buttonRefs.current[lastClickedButton]) {
       buttonRefs.current[lastClickedButton].scrollIntoView({
-        behavior: 'smooth',
-        block: 'center', 
+        behavior: "smooth",
+        block: "center",
       });
     }
   }, [today, targetDate, setScratchingAllowed, lastClickedButton]);
@@ -248,12 +250,8 @@ const Home = () => {
     } else if (scratchingAllowed && selectedDay === null) {
       setLastClickedButton(index);
       setSelectedDay(day);
-    } else {
-      setSelectedDay(null);
     }
   };
-
-
 
   const handlePreferenceSelect = (preference: string) => {
     dispatch(setGender({ gender: preference }));
@@ -344,6 +342,18 @@ const Home = () => {
     mm25,
   ];
 
+  const { data: userData, refetch } = useGetUserByIdQuery(user?._id ?? "", {
+    skip: !user,
+  });
+  console.log(userData, "here");
+
+  useEffect(() => {
+    if (userData) {
+      console.log("here");
+      dispatch(setUser({ user: userData.data }));
+    }
+  }, [userData, refetch]);
+
   return (
     <Box sx={styles.container}>
       <Box component="img" src={lightsSvg} alt="Lights" sx={styles.lights} />
@@ -400,18 +410,18 @@ const Home = () => {
               ref={(el) => (buttonRefs.current[i] = el)}
             >
               <motion.div
-             style={{
-              position: "relative",
-            }}
-            animate={{
-              scale: isSelected ? 1 : 0.8,
-              opacity: isHidden ? 0 : 1,  
-            }}
-              transition={{
-                type: "spring",
-                stiffness: 150, 
-                damping: 25,    
-              }}
+                style={{
+                  position: "relative",
+                }}
+                animate={{
+                  scale: isSelected ? 1 : 0.9,
+                  opacity: isHidden ? 0 : 1,
+                }}
+                transition={{
+                  type: "spring",
+                  stiffness: 150,
+                  damping: 25,
+                }}
               >
                 {selectedDay ? (
                   user?.scratchCards[i] ? (
@@ -425,13 +435,14 @@ const Home = () => {
                           : scratchImagesmm[i]
                       }
                       alt="Footer"
-                      sx={{ width: "100%", borderRadius: "50%" }}
+                      sx={{ width: "250px", borderRadius: "50%" }}
                     />
                   ) : (
                     <ScratchCard
-                      width={window.innerWidth > 768 ? 200 : 250}
-                      height={window.innerWidth > 768 ? 200 : 250}
+                      width={250}
+                      height={250}
                       image={dateCircle}
+                      brushSize={20}
                       finishPercent={60}
                       onComplete={handleScratch}
                     >
@@ -446,10 +457,10 @@ const Home = () => {
                         }
                         alt="Footer"
                         sx={{
-                          width: "100%", 
-                          maxWidth: "250px",  
-                          height: "auto", 
-                          borderRadius: "50%", 
+                          width: "250px",
+                          // maxWidth: "250px",
+                          height: "auto",
+                          borderRadius: "50%",
                         }}
                       />
                     </ScratchCard>
@@ -504,7 +515,7 @@ const Home = () => {
       <Box
         sx={{
           position: "absolute",
-          bottom: 0,
+          bottom: "-4px",
           width: "100%",
           zIndex: 99,
         }}
@@ -520,8 +531,9 @@ const Home = () => {
             width: "100%",
             zIndex: 100,
             display: "flex",
-            justifyContent: "space-around",
+            justifyContent: user?.payment ? "center" : "space-around",
             alignItems: "center",
+            gap: user?.payment ? "30px" : 0,
           }}
         >
           <Button
@@ -568,13 +580,13 @@ const Home = () => {
               }}
               onClick={() => {
                 user && !user?.active
-                ? navigate("/welcome")
-                : user
-                ? navigate("/sales")
-                : navigate("/login");
+                  ? navigate("/welcome")
+                  : user
+                  ? navigate("/sales")
+                  : navigate("/login");
               }}
             >
-              <Box component={"img"} src={upgradePng} width={"16px"} />
+              <Box component={"img"} src={salesImage1} width={"16px"} />
               <Typography
                 sx={{
                   fontFamily: "Poppins",
@@ -709,7 +721,16 @@ const Home = () => {
           </Box>
         </DialogContent>
         <DialogActions>
-          <Button onClick={() => setOpenModal(false)}>Cancel</Button>
+          <Button
+            onClick={() => setOpenModal(false)}
+            sx={{
+              color: "#8939FE",
+              borderRadius: "8px",
+              marginBottom: "10px",
+            }}
+          >
+            Cancel
+          </Button>
         </DialogActions>
       </Dialog>
     </Box>
