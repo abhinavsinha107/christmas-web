@@ -66,7 +66,7 @@ const useStyle = () =>
       flexShrink: 1,
       color: "#fff",
       fontFamily: "Inter, sans-serif",
-      fontSize: "13px",
+      fontSize: "12px",
       lineHeight: "15px",
       fontWeight: "400",
     },
@@ -123,19 +123,19 @@ const Welcome = () => {
           justifyContent: "space-around",
           padding: "0 10px",
           gap: 5,
-          overflowY: "auto",
-          marginBottom: "210px",
+          // overflowY: "auto",
+          // marginBottom: "210px",
         }}
       >
-        <HeroSection title="Welcome" hasSubTitle={false} daysRemaining={0} />
+        <HeroSection title="Welcome" hasSubTitle={false} daysRemaining={0} welcome={true} />
         <Typography
           px={"20px"}
           fontFamily={"Inter"}
           fontWeight={400}
-          fontSize={"16px"}
+          fontSize={"14px"}
           lineHeight={"19.36px"}
           color="white"
-          marginBottom={"20px"}
+          // marginBottom={"20px"}
         >
           We wish you a lot of fun with this 'Sexmas Calendar' and many great
           adventures and experiences. Dare and have fun, but only participate in
@@ -145,7 +145,7 @@ const Welcome = () => {
           px={"20px"}
           fontFamily={"Inter"}
           fontWeight={400}
-          fontSize={"16px"}
+          fontSize={"14px"}
           lineHeight={"19.36px"}
           color="white"
           marginBottom={"20px"}

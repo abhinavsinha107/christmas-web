@@ -5,12 +5,14 @@ interface HeroSectionProps {
   title: string;
   hasSubTitle: boolean;
   daysRemaining: number;
+  welcome?: boolean;
 }
 
 const HeroSection: React.FC<HeroSectionProps> = ({
   title,
   hasSubTitle,
   daysRemaining,
+  welcome,
 }) => {
   const theme = useTheme();
 
@@ -22,6 +24,7 @@ const HeroSection: React.FC<HeroSectionProps> = ({
         alignItems: "center",
         justifyContent: "center",
         padding: theme.spacing(4),
+        paddingY: welcome ? theme.spacing(0) : theme.spacing(4),
       }}
     >
       <Typography
