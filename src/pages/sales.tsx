@@ -10,9 +10,7 @@ import leftLeaf from "../assets/leftLeaf.png";
 import rightLeaf from "../assets/rightLeaf.png";
 import testimonialsSvg from "../assets/testimonials.svg";
 import starRatingsSvg from "../assets/starRatings.svg";
-import {
-  useCreatePaymentSessionMutation,
-} from "../services/api";
+import { useCreatePaymentSessionMutation } from "../services/api";
 import { RootState, useAppSelector } from "../redux/store";
 import { toast } from "react-toastify";
 import { useEffect } from "react";
@@ -281,15 +279,27 @@ const Sales = () => {
           alt="Sales Image 2"
           sx={styles.image2}
         />
+      </div>
+      <Box
+        position={"fixed"}
+        left={0}
+        right={0}
+        bottom={0}
+        zIndex={999}
+        maxWidth={"430px"}
+        marginX={"auto"}
+      >
         <Box
           sx={{
-            position: "absolute",
-            bottom: 5,
-            width: "90%",
+            width: "100%",
             zIndex: 10,
+            display: "flex",
+            flexDirection: "column",
+            justifyContent: "center",
+            alignItems: "center",
           }}
         >
-          <Box width={"100%"}>
+          <Box width={"90%"}>
             <Button onClick={handleDeposit} sx={styles.button}>
               <Typography sx={styles.buttonUpperText}>
                 <span
@@ -319,7 +329,7 @@ const Sales = () => {
             </Typography>
           </Box>
         </Box>
-      </div>
+      </Box>
     </Box>
   );
 };

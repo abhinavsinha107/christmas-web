@@ -164,7 +164,7 @@ const useStyle = () =>
     },
     footerButtonsBig: {
       position: "absolute",
-      bottom: 0,
+      bottom: "50px",
       zIndex: 100,
       width: "100%",
       backgroundColor: "inherit",
@@ -191,6 +191,7 @@ const Home = () => {
   const dispatch = useAppDispatch();
 
   const { user } = useAppSelector((state: RootState) => state.user);
+  console.log(user);
   const { gender } = useAppSelector((state: RootState) => state.gender);
 
   const [scratchingAllowed, setScratchingAllowed] = useState(false);
@@ -345,11 +346,10 @@ const Home = () => {
   const { data: userData, refetch } = useGetUserByIdQuery(user?._id ?? "", {
     skip: !user,
   });
-  console.log(userData, "here");
 
   useEffect(() => {
     if (userData) {
-      console.log("here");
+      console.log(userData.data);
       dispatch(setUser({ user: userData.data }));
     }
   }, [userData, refetch]);
@@ -369,6 +369,7 @@ const Home = () => {
           paddingBottom: "150px",
           scrollbarWidth: "none",
           msOverflowStyle: "none",
+          width: "100%",
         }}
       >
         <HeroSection
@@ -406,12 +407,16 @@ const Home = () => {
                 zIndex: isSelected ? 1000 : isHidden ? 0 : 1,
                 display: isHidden ? "none" : "block",
                 pointerEvents: isHidden ? "none" : "auto",
+                width: isSelected ? "250px" : "45%",
               }}
               ref={(el) => (buttonRefs.current[i] = el)}
             >
               <motion.div
                 style={{
                   position: "relative",
+                  display: "flex",
+                  justifyContent: "center",
+                  alignItems: "center",
                 }}
                 animate={{
                   scale: isSelected ? 1 : 0.9,
@@ -469,7 +474,7 @@ const Home = () => {
                   <Box
                     sx={{
                       ...styles.backgroundImage,
-                      width: selectedDay ? "250px" : "174px",
+                      // width: selectedDay ? "250px" : "45vw",
                       height: selectedDay ? "250px" : "174px",
                       backgroundImage:
                         user?.scratchCards[i] && gender === "Lesbian"
@@ -513,177 +518,188 @@ const Home = () => {
       )}
 
       <Box
-        sx={{
-          position: "absolute",
-          bottom: "-4px",
-          width: "100%",
-          zIndex: 99,
-        }}
+        position={"fixed"}
+        left={0}
+        right={0}
+        bottom={0}
+        zIndex={999}
+        maxWidth={"430px"}
+        marginX={"auto"}
       >
-        <Footer />
-      </Box>
-
-      {!selectedDay && (
         <Box
           sx={{
-            position: "absolute",
-            bottom: 20,
             width: "100%",
-            zIndex: 100,
-            display: "flex",
-            justifyContent: user?.payment ? "center" : "space-around",
-            alignItems: "center",
-            gap: user?.payment ? "30px" : 0,
+            marginBottom: "-4px",
           }}
         >
-          <Button
-            sx={{
-              width: "112px",
-              height: "40px",
-              background: "linear-gradient(360deg, #8939FE 0%, #C1A0FD 100%)",
-              borderRadius: "10px",
-              gap: "5px",
-            }}
-            onClick={() => setOpenModal(true)}
-          >
-            <Box
-              component={"img"}
-              src={
-                gender === "Straight"
-                  ? straightPng
-                  : gender === "Gay"
-                  ? gayPng
-                  : lesbianPng
-              }
-              width={"16px"}
-            />
-            <Typography
-              sx={{
-                fontFamily: "Poppins",
-                fontWeight: 700,
-                fontSize: "15px",
-                color: "white",
-                textTransform: "capitalize",
-              }}
-            >
-              {gender}
-            </Typography>
-          </Button>
-          {!user?.payment && (
-            <Button
-              sx={{
-                width: "112px",
-                height: "40px",
-                background: "linear-gradient(360deg, #8939FE 0%, #C1A0FD 100%)",
-                borderRadius: "10px",
-                gap: "5px",
-              }}
-              onClick={() => {
-                user && !user?.active
-                  ? navigate("/welcome")
-                  : user
-                  ? navigate("/sales")
-                  : navigate("/login");
-              }}
-            >
-              <Box component={"img"} src={salesImage1} width={"16px"} />
-              <Typography
-                sx={{
-                  fontFamily: "Poppins",
-                  fontWeight: 700,
-                  fontSize: "15px",
-                  color: "white",
-                  textTransform: "capitalize",
-                }}
-              >
-                Upgrade
-              </Typography>
-            </Button>
-          )}
-          {!user && (
-            <Button
-              sx={{
-                width: "112px",
-                height: "40px",
-                background: "linear-gradient(360deg, #8939FE 0%, #C1A0FD 100%)",
-                borderRadius: "10px",
-                gap: "5px",
-              }}
-              onClick={() => navigate("/login")}
-            >
-              <Box component={"img"} src={loginPng} width={"16px"} />
-              <Typography
-                sx={{
-                  fontFamily: "Poppins",
-                  fontWeight: 700,
-                  fontSize: "15px",
-                  color: "white",
-                  textTransform: "capitalize",
-                }}
-              >
-                Login
-              </Typography>
-            </Button>
-          )}
-          {user && (
-            <Button
-              sx={{
-                width: "112px",
-                height: "40px",
-                background: "linear-gradient(360deg, #8939FE 0%, #C1A0FD 100%)",
-                borderRadius: "10px",
-                gap: "5px",
-              }}
-              onClick={() => {
-                localStorage.clear();
-                dispatch(resetUser());
-                toast.success("Logout Successful");
-                navigate("/login");
-              }}
-            >
-              <Box component={"img"} src={loginPng} width={"16px"} />
-              <Typography
-                sx={{
-                  fontFamily: "Poppins",
-                  fontWeight: 700,
-                  fontSize: "15px",
-                  color: "white",
-                  textTransform: "capitalize",
-                }}
-              >
-                Logout
-              </Typography>
-            </Button>
-          )}
+          <Footer />
         </Box>
-      )}
 
-      {selectedDay && (
-        <Box
-          sx={{
-            ...styles.footerButtonsBig,
-            height: "11%",
-          }}
-        >
-          <Button
-            onClick={() => setSelectedDay(null)}
-            style={{
-              width: "90%",
-              background: "linear-gradient(360deg, #D3C9FF 0%, #FFFFFF 100%)",
-              height: "56px",
-              borderRadius: "11px",
-              justifyContent: "center",
+        {!selectedDay && (
+          <Box
+            sx={{
+              position: "absolute",
+              bottom: 20,
+              width: "100%",
+              zIndex: 100,
+              display: "flex",
+              justifyContent: user?.payment ? "center" : "space-around",
               alignItems: "center",
-              fontFamily: "Poppins",
-              fontWeight: 400,
-              fontSize: "18px",
-              color: "#000000",
+              gap: user?.payment ? "30px" : 0,
             }}
           >
-            Back
-          </Button>
-        </Box>
-      )}
+            <Button
+              sx={{
+                width: "112px",
+                height: "40px",
+                background: "linear-gradient(360deg, #8939FE 0%, #C1A0FD 100%)",
+                borderRadius: "10px",
+                gap: "5px",
+              }}
+              onClick={() => setOpenModal(true)}
+            >
+              <Box
+                component={"img"}
+                src={
+                  gender === "Straight"
+                    ? straightPng
+                    : gender === "Gay"
+                    ? gayPng
+                    : lesbianPng
+                }
+                width={"16px"}
+              />
+              <Typography
+                sx={{
+                  fontFamily: "Poppins",
+                  fontWeight: 700,
+                  fontSize: "15px",
+                  color: "white",
+                  textTransform: "capitalize",
+                }}
+              >
+                {gender}
+              </Typography>
+            </Button>
+            {!user?.payment && (
+              <Button
+                sx={{
+                  width: "112px",
+                  height: "40px",
+                  background:
+                    "linear-gradient(360deg, #8939FE 0%, #C1A0FD 100%)",
+                  borderRadius: "10px",
+                  gap: "5px",
+                }}
+                onClick={() => {
+                  user && !user?.active
+                    ? navigate("/welcome")
+                    : user
+                    ? navigate("/sales")
+                    : navigate("/login");
+                }}
+              >
+                <Box component={"img"} src={salesImage1} width={"16px"} />
+                <Typography
+                  sx={{
+                    fontFamily: "Poppins",
+                    fontWeight: 700,
+                    fontSize: "15px",
+                    color: "white",
+                    textTransform: "capitalize",
+                  }}
+                >
+                  Upgrade
+                </Typography>
+              </Button>
+            )}
+            {!user && (
+              <Button
+                sx={{
+                  width: "112px",
+                  height: "40px",
+                  background:
+                    "linear-gradient(360deg, #8939FE 0%, #C1A0FD 100%)",
+                  borderRadius: "10px",
+                  gap: "5px",
+                }}
+                onClick={() => navigate("/login")}
+              >
+                <Box component={"img"} src={loginPng} width={"16px"} />
+                <Typography
+                  sx={{
+                    fontFamily: "Poppins",
+                    fontWeight: 700,
+                    fontSize: "15px",
+                    color: "white",
+                    textTransform: "capitalize",
+                  }}
+                >
+                  Login
+                </Typography>
+              </Button>
+            )}
+            {user && (
+              <Button
+                sx={{
+                  width: "112px",
+                  height: "40px",
+                  background:
+                    "linear-gradient(360deg, #8939FE 0%, #C1A0FD 100%)",
+                  borderRadius: "10px",
+                  gap: "5px",
+                }}
+                onClick={() => {
+                  localStorage.clear();
+                  dispatch(resetUser());
+                  toast.success("Logout Successful");
+                  navigate("/login");
+                }}
+              >
+                <Box component={"img"} src={loginPng} width={"16px"} />
+                <Typography
+                  sx={{
+                    fontFamily: "Poppins",
+                    fontWeight: 700,
+                    fontSize: "15px",
+                    color: "white",
+                    textTransform: "capitalize",
+                  }}
+                >
+                  Logout
+                </Typography>
+              </Button>
+            )}
+          </Box>
+        )}
+
+        {selectedDay && (
+          <Box
+            sx={{
+              ...styles.footerButtonsBig,
+              height: "11%",
+            }}
+          >
+            <Button
+              onClick={() => setSelectedDay(null)}
+              style={{
+                width: "90%",
+                background: "linear-gradient(360deg, #D3C9FF 0%, #FFFFFF 100%)",
+                height: "56px",
+                borderRadius: "11px",
+                justifyContent: "center",
+                alignItems: "center",
+                fontFamily: "Poppins",
+                fontWeight: 400,
+                fontSize: "18px",
+                color: "#000000",
+              }}
+            >
+              Back
+            </Button>
+          </Box>
+        )}
+      </Box>
       <Dialog open={openModal} onClose={() => setOpenModal(false)}>
         <DialogTitle>Select Your Preference</DialogTitle>
         <DialogContent sx={{ paddingBottom: 0 }}>

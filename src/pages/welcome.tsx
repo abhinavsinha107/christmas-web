@@ -124,7 +124,7 @@ const Welcome = () => {
           padding: "0 10px",
           gap: 5,
           overflowY: "auto",
-          paddingBottom: "150px",
+          marginBottom: "210px",
         }}
       >
         <HeroSection title="Welcome" hasSubTitle={false} daysRemaining={0} />
@@ -182,44 +182,55 @@ const Welcome = () => {
       </div>
 
       <Box
-        sx={{
-          position: "absolute",
-          bottom: "-4px",
-          width: "100%",
-          zIndex: 10,
-        }}
+        position={"fixed"}
+        left={0}
+        right={0}
+        bottom={0}
+        zIndex={999}
+        maxWidth={"430px"}
+        marginX={"auto"}
       >
-        <Footer />
-      </Box>
-
-      <Box
-        sx={{
-          position: "absolute",
-          bottom: 20,
-          width: "90%",
-          zIndex: 10,
-          display: "flex",
-          justifyContent: "space-around",
-          alignItems: "center",
-        }}
-      >
-        <Button
-          fullWidth
+        <Box
           sx={{
-            height: 56,
-            borderRadius: "11px",
-            color: "white",
-            fontWeight: 700,
-            fontSize: "18px",
-            textTransform: "none",
-            background: "linear-gradient(360deg, #8939FE 0%, #C1A0FD 100%)",
-            marginTop: "15px",
+            position: "absolute",
+            bottom: "-4px",
+            width: "100%",
+            zIndex: 10,
           }}
-          disabled={!checked}
-          onClick={handleActive}
         >
-          Let's Go
-        </Button>
+          <Footer />
+        </Box>
+
+        <Box
+          sx={{
+            position: "absolute",
+            bottom: 15,
+            width: "100%",
+            zIndex: 10,
+            display: "flex",
+            justifyContent: "space-around",
+            alignItems: "center",
+          }}
+        >
+          <Button
+            fullWidth
+            sx={{
+              height: 56,
+              borderRadius: "11px",
+              color: "white",
+              fontWeight: 700,
+              fontSize: "18px",
+              textTransform: "none",
+              background: "linear-gradient(360deg, #8939FE 0%, #C1A0FD 100%)",
+              marginTop: "15px",
+              width: "90%",
+            }}
+            disabled={!checked}
+            onClick={handleActive}
+          >
+            Let's Go
+          </Button>
+        </Box>
       </Box>
     </Box>
   );
