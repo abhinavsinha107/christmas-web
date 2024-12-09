@@ -54,7 +54,7 @@ const HeroSection: React.FC<HeroSectionProps> = ({
         >
           {daysRemaining > 0
             ? `In ${daysRemaining} days it starts`
-            : "It's already started!"}
+            : "It already started!"}
         </Typography>
       )}
     </Box>
