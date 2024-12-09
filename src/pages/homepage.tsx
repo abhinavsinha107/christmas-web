@@ -191,7 +191,6 @@ const Home = () => {
   const dispatch = useAppDispatch();
 
   const { user } = useAppSelector((state: RootState) => state.user);
-  console.log(user);
   const { gender } = useAppSelector((state: RootState) => state.gender);
 
   const [scratchingAllowed, setScratchingAllowed] = useState(false);
@@ -349,7 +348,6 @@ const Home = () => {
 
   useEffect(() => {
     if (userData) {
-      console.log(userData.data);
       dispatch(setUser({ user: userData.data }));
     }
   }, [userData, refetch]);
