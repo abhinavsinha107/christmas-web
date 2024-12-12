@@ -7,6 +7,11 @@ import {
   useTheme,
   Stack,
   Theme,
+  ListItemText,
+  ListItem,
+  List,
+  IconButton,
+  Drawer,
 } from "@mui/material";
 import { createStyles } from "@mui/styles";
 import lightsSvg from "../assets/lights.svg";
@@ -19,7 +24,8 @@ import { useLoginMutation } from "../services/api";
 import { notifyError, notifySuccess } from "../toast";
 import { useAppDispatch } from "../redux/store";
 import { setUser } from "../redux/reducers/userReducer";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
+import menuSvg from "../assets/menu.svg";
 
 const useStyle = (theme: Theme) =>
   createStyles({
@@ -87,6 +93,13 @@ const useStyle = (theme: Theme) =>
       background: "linear-gradient(180deg, #C1A0FD 0%, #8939FE 100%)",
       marginTop: "15px",
     },
+    menu: {
+      position: "absolute",
+      top: "5%",
+      left: "5%",
+      minWidth: 0,
+      p: 0,
+    },
   });
 
 const Login = () => {
@@ -136,6 +149,12 @@ const Login = () => {
     }
   }, []);
 
+  const [isSidebarOpen, setSidebarOpen] = useState(false);
+
+  const toggleSidebar = (open: boolean) => {
+    setSidebarOpen(open);
+  };
+
   return (
     <Box sx={styles.container}>
       <Box component="img" src={lightsSvg} alt="Lights" sx={styles.lights} />
@@ -143,6 +162,156 @@ const Login = () => {
       <Button sx={styles.cross} onClick={() => navigate(-1)}>
         <Box component="img" src={crossSvg} alt="Close" />
       </Button>
+
+      <IconButton sx={styles.menu} onClick={() => toggleSidebar(true)}>
+        <Box component="img" src={menuSvg} alt="Menu" />
+      </IconButton>
+
+      <Drawer
+        anchor="left"
+        open={isSidebarOpen}
+        onClose={() => toggleSidebar(false)}
+        PaperProps={{
+          sx: {
+            width: "100vw",
+            height: "100vh",
+            backgroundColor: "#000",
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "center",
+          },
+        }}
+      >
+        <Box
+          sx={{
+            display: "flex",
+            flexDirection: "column",
+            height: "100%",
+            maxWidth: "430px",
+            width: "100%",
+            backgroundColor: "#000",
+          }}
+        >
+          <Box
+            sx={{
+              display: "flex",
+              justifyContent: "flex-end",
+              padding: "16px",
+            }}
+          >
+            <IconButton
+              onClick={() => toggleSidebar(false)}
+              sx={{
+                textTransform: "none",
+                color: "#000",
+                fontWeight: "bold",
+              }}
+            >
+              <Box component="img" src={crossSvg} alt="Menu" />
+            </IconButton>
+          </Box>
+
+          <Typography
+            sx={{
+              fontFamily: "Teko",
+              color: "white",
+              paddingLeft: "16px",
+              fontWeight: 700,
+              fontSize: "50px",
+            }}
+          >
+            Sexmas
+          </Typography>
+
+          {/* Sidebar Content */}
+          <List sx={{ flex: 1, padding: "16px" }}>
+            <ListItem
+              sx={{
+                backgroundColor: "#D9D9D9",
+                marginBottom: "20px",
+                cursor: "pointer",
+                borderRadius: "8px",
+              }}
+              onClick={() => {
+                window.open("https://scratchadventure.com/pages/legal-notice");
+              }}
+            >
+              <ListItemText
+                primary={"Legal Notice"}
+                sx={{
+                  backgroundColor: "#D9D9D9",
+                  fontWeight: "400",
+                  fontSize: "16px",
+                }}
+              />
+            </ListItem>
+            <ListItem
+              sx={{
+                backgroundColor: "#D9D9D9",
+                marginBottom: "20px",
+                cursor: "pointer",
+                borderRadius: "8px",
+              }}
+              onClick={() => {
+                window.open(
+                  "https://scratchadventure.com/pages/privacy-policy"
+                );
+              }}
+            >
+              <ListItemText
+                primary={"Privacy Policy"}
+                sx={{
+                  backgroundColor: "#D9D9D9",
+                  fontWeight: "400",
+                  fontSize: "16px",
+                }}
+              />
+            </ListItem>
+            <ListItem
+              sx={{
+                backgroundColor: "#D9D9D9",
+                marginBottom: "20px",
+                cursor: "pointer",
+                borderRadius: "8px",
+              }}
+              onClick={() => {
+                window.open(
+                  "https://scratchadventure.com/pages/app-terms-and-conditions"
+                );
+              }}
+            >
+              <ListItemText
+                primary={"Terms and Conditions"}
+                sx={{
+                  backgroundColor: "#D9D9D9",
+                  fontWeight: "400",
+                  fontSize: "16px",
+                }}
+              />
+            </ListItem>
+            <ListItem
+              sx={{
+                backgroundColor: "#D9D9D9",
+                marginBottom: "20px",
+                cursor: "pointer",
+                borderRadius: "8px",
+              }}
+              onClick={() => {
+                window.open("https://scratchadventure.com/pages/disclaimer");
+              }}
+            >
+              <ListItemText
+                primary={"Disclaimer"}
+                sx={{
+                  backgroundColor: "#D9D9D9",
+                  fontWeight: "400",
+                  fontSize: "16px",
+                }}
+              />
+            </ListItem>
+          </List>
+        </Box>
+      </Drawer>
 
       <Box component="img" src={logoPng} alt="Logo" sx={styles.logo} />
 

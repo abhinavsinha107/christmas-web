@@ -6,6 +6,11 @@ import {
   DialogTitle,
   DialogContent,
   DialogActions,
+  IconButton,
+  Drawer,
+  List,
+  ListItem,
+  ListItemText,
 } from "@mui/material";
 import { createStyles } from "@mui/styles";
 import lightsSvg from "../assets/lights.svg";
@@ -28,6 +33,8 @@ import { useGetUserByIdQuery, useUpdateUserMutation } from "../services/api";
 import { notifyError } from "../toast";
 import { motion } from "framer-motion";
 import salesImage1 from "../assets/salesgif1.gif";
+import menuSvg from "../assets/menu.svg";
+import crossSvg from "../assets/cross.svg";
 
 import ff1 from "../assets/PositionsSexmas/f+f Positions/Christmas f+f Position 1.jpg";
 import ff2 from "../assets/PositionsSexmas/f+f Positions/Christmas f+f Position 2.jpg";
@@ -121,6 +128,13 @@ const useStyle = () =>
     },
     lights: {
       width: "100%",
+    },
+    menu: {
+      position: "absolute",
+      top: "5%",
+      left: "5%",
+      minWidth: 0,
+      p: 0,
     },
     backgroundImage: {
       width: "174px",
@@ -352,9 +366,190 @@ const Home = () => {
     }
   }, [userData, refetch]);
 
+  const [isSidebarOpen, setSidebarOpen] = useState(false);
+
+  const toggleSidebar = (open: boolean) => {
+    setSidebarOpen(open);
+  };
+
   return (
     <Box sx={styles.container}>
       <Box component="img" src={lightsSvg} alt="Lights" sx={styles.lights} />
+      <IconButton sx={styles.menu} onClick={() => toggleSidebar(true)}>
+        <Box component="img" src={menuSvg} alt="Menu" />
+      </IconButton>
+
+      <Drawer
+        anchor="left"
+        open={isSidebarOpen}
+        onClose={() => toggleSidebar(false)}
+        PaperProps={{
+          sx: {
+            width: "100vw",
+            height: "100vh",
+            backgroundColor: "#000",
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "center",
+          },
+        }}
+      >
+        <Box
+          sx={{
+            display: "flex",
+            flexDirection: "column",
+            height: "100%",
+            maxWidth: "430px",
+            width: "100%",
+            backgroundColor: "#000",
+          }}
+        >
+          <Box
+            sx={{
+              display: "flex",
+              justifyContent: "flex-end",
+              padding: "16px",
+            }}
+          >
+            <IconButton
+              onClick={() => toggleSidebar(false)}
+              sx={{
+                textTransform: "none",
+                color: "#000",
+                fontWeight: "bold",
+              }}
+            >
+              <Box component="img" src={crossSvg} alt="Menu" />
+            </IconButton>
+          </Box>
+
+          <Typography
+            sx={{
+              fontFamily: "Teko",
+              color: "white",
+              paddingLeft: "16px",
+              fontWeight: 700,
+              fontSize: "50px",
+            }}
+          >
+            Sexmas
+          </Typography>
+
+          {/* Sidebar Content */}
+          <List sx={{ flex: 1, padding: "16px" }}>
+            {!user?.payment && (
+              <ListItem
+                sx={{
+                  backgroundColor: "#D9D9D9",
+                  marginBottom: "20px",
+                  cursor: "pointer",
+                  borderRadius: "8px",
+                }}
+                onClick={() => {
+                  if (!user) {
+                    navigate("/login");
+                  } else {
+                    navigate("/sales");
+                  }
+                }}
+              >
+                <ListItemText
+                  primary={"Upgrade your Sex Live 😈"}
+                  sx={{
+                    backgroundColor: "#D9D9D9",
+                    fontWeight: "400",
+                    fontSize: "16px",
+                  }}
+                />
+              </ListItem>
+            )}
+            <ListItem
+              sx={{
+                backgroundColor: "#D9D9D9",
+                marginBottom: "20px",
+                cursor: "pointer",
+                borderRadius: "8px",
+              }}
+              onClick={() => {
+                window.open("https://scratchadventure.com/pages/legal-notice");
+              }}
+            >
+              <ListItemText
+                primary={"Legal Notice"}
+                sx={{
+                  backgroundColor: "#D9D9D9",
+                  fontWeight: "400",
+                  fontSize: "16px",
+                }}
+              />
+            </ListItem>
+            <ListItem
+              sx={{
+                backgroundColor: "#D9D9D9",
+                marginBottom: "20px",
+                cursor: "pointer",
+                borderRadius: "8px",
+              }}
+              onClick={() => {
+                window.open(
+                  "https://scratchadventure.com/pages/privacy-policy"
+                );
+              }}
+            >
+              <ListItemText
+                primary={"Privacy Policy"}
+                sx={{
+                  backgroundColor: "#D9D9D9",
+                  fontWeight: "400",
+                  fontSize: "16px",
+                }}
+              />
+            </ListItem>
+            <ListItem
+              sx={{
+                backgroundColor: "#D9D9D9",
+                marginBottom: "20px",
+                cursor: "pointer",
+                borderRadius: "8px",
+              }}
+              onClick={() => {
+                window.open(
+                  "https://scratchadventure.com/pages/app-terms-and-conditions"
+                );
+              }}
+            >
+              <ListItemText
+                primary={"Terms and Conditions"}
+                sx={{
+                  backgroundColor: "#D9D9D9",
+                  fontWeight: "400",
+                  fontSize: "16px",
+                }}
+              />
+            </ListItem>
+            <ListItem
+              sx={{
+                backgroundColor: "#D9D9D9",
+                marginBottom: "20px",
+                cursor: "pointer",
+                borderRadius: "8px",
+              }}
+              onClick={() => {
+                window.open("https://scratchadventure.com/pages/disclaimer");
+              }}
+            >
+              <ListItemText
+                primary={"Disclaimer"}
+                sx={{
+                  backgroundColor: "#D9D9D9",
+                  fontWeight: "400",
+                  fontSize: "16px",
+                }}
+              />
+            </ListItem>
+          </List>
+        </Box>
+      </Drawer>
 
       <div
         style={{
